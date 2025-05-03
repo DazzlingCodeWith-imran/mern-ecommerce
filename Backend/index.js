@@ -15,15 +15,10 @@ connectDB();
 // Middleware
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://bazaarhubfashion.netlify.app"
-    ],
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
   })
 );
-
 app.use(cookieParser());
 app.use(express.json());
 

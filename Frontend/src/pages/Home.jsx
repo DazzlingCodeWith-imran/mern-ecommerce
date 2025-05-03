@@ -21,7 +21,7 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const res = await axios.get("https://mern-ecommerce-2-o31y.onrender.com/api/products", {
+        const res = await axios.get("http://localhost:5000/api/products", {
           params: { limit: 12, sortField: "popularity", sortOrder: "desc" }
         });
         setFeaturedProducts(res.data.data.products || []);
@@ -34,7 +34,6 @@ const Home = () => {
     };
     fetchFeaturedProducts();
   }, []);
-  
 
   useEffect(() => {
     localStorage.setItem("recentlyViewed", JSON.stringify(recentlyViewed));

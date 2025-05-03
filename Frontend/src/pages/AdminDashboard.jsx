@@ -26,7 +26,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const res = await axios.get("https://mern-ecommerce-2-o31y.onrender.com/api/users/check-auth", {
+        const res = await axios.get("http://localhost:5000/api/users/check-auth", {
           withCredentials: true,
         });
         if (res.data.data.role !== "admin") {

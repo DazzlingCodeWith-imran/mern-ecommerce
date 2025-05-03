@@ -29,7 +29,7 @@ const Orders = () => {
         return;
       }
 
-      const res = await axios.get("https://mern-ecommerce-2-o31y.onrender.com/api/orders", {
+      const res = await axios.get("http://localhost:5000/api/orders", {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });

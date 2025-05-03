@@ -15,11 +15,11 @@ const Cart = () => {
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCheckoutComplete, setIsCheckoutComplete] = useState(false);
-
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/check-auth", {
+        // Change localhost URL to the production backend URL
+        const response = await axios.get("https://mern-ecommerce-2-o31y.onrender.com/api/users/check-auth", {
           withCredentials: true,
         });
         setIsLoggedIn(response.data.success);
@@ -31,6 +31,7 @@ const Cart = () => {
     };
     checkAuth();
   }, [navigate]);
+  
 
   const totalPrice = cart.reduce((total, item) => total + item.productPrice * item.quantity, 0);
 

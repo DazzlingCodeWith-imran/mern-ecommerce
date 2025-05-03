@@ -23,11 +23,10 @@ app.use(cookieParser());
 app.use(express.json());
 
 // ✅ Corrected route imports (lowercase 'routes')
-const userRouter = require("./routes/user");
-const productRouter = require("./routes/productRoutes");
-const orderRouter = require("./routes/orderRoutes");
-const paymentRouter = require("./routes/paymentRoutes");
-
+const userRouter = require("./Routes/User");
+const productRouter = require("./Routes/productRoutes");
+const orderRouter = require("./Routes/orderRoutes");
+const paymentRouter = require("./Routes/paymentRoutes");
 
 // API Routes
 app.use("/api/users", userRouter);

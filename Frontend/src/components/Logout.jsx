@@ -6,7 +6,7 @@ const Logout = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
+      await axios.post("https://mern-ecommerce-2-o31y.onrender.com/api/users/logout", {}, { withCredentials: true });
       document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Client-side clear
       navigate("/login");
     } catch (error) {

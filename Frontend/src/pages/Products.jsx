@@ -28,7 +28,7 @@ const Products = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:5000/api/products", {
+        const res = await axios.get("https://mern-ecommerce-2-o31y.onrender.com/api/products", {
           params: {
             page,
             limit: productsPerPage,

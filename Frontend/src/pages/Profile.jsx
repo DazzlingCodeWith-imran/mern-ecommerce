@@ -20,8 +20,8 @@ const Profile = () => {
       setLoading(true);
       try {
         const [profileRes, ordersRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/users/profile", { withCredentials: true }),
-          axios.get("http://localhost:5000/api/orders", { withCredentials: true }),
+          axios.get("https://mern-ecommerce-2-o31y.onrender.com/api/users/profile", { withCredentials: true }),
+          axios.get("https://mern-ecommerce-2-o31y.onrender.com/api/orders", { withCredentials: true }),
         ]);
         setUser(profileRes.data.data);
         setFormData({ name: profileRes.data.data.name, password: "", profileImage: profileRes.data.data.profileImage || "" });

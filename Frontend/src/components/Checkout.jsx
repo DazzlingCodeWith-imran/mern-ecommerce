@@ -14,7 +14,7 @@ const Checkout = ({ cartItems }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/check-auth", {
+        const response = await axios.get("https://mern-ecommerce-2-o31y.onrender.com/api/users/check-auth", {
           withCredentials: true,
         });
         if (response.data.success) {
@@ -50,14 +50,14 @@ const Checkout = ({ cartItems }) => {
       const amountInPaise = total * 100;
 
       const response = await axios.post(
-        "http://localhost:5000/api/payments/create-order",
+        "https://mern-ecommerce-2-o31y.onrender.com/api/payments/create-order",
         { amount: amountInPaise, address, items: cartItems },
         { withCredentials: true }
       );
 
       const orderId = response.data.order.id;
       const verifyResponse = await axios.post(
-        "http://localhost:5000/api/payments/verify",
+        "https://mern-ecommerce-2-o31y.onrender.com/api/payments/verify",
         { orderId },
         { withCredentials: true }
       );

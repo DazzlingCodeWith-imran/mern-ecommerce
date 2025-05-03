@@ -15,7 +15,7 @@ const VerifyOTP = () => {
     try {
       const email = localStorage.getItem("email");
       if (!email) throw new Error("No email found in localStorage");
-      const res = await axios.post("http://localhost:5000/api/users/verify-otp", { email, otp });
+      const res = await axios.post("https://mern-ecommerce-2-o31y.onrender.com/api/users/verify-otp", { email, otp });
       toast.success(res.data.message);
       localStorage.removeItem("email"); // Clean up after verification
       navigate("/login");

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
@@ -15,7 +16,7 @@ const VerifyOTP = () => {
     try {
       const email = localStorage.getItem("email");
       if (!email) throw new Error("No email found in localStorage");
-      const res = await axios.post("http://localhost:5000/api/users/verify-otp", { email, otp });
+      const res = await axios.post(`${backendURL}/api/users/verify-otp`, { email, otp });
       toast.success(res.data.message);
       localStorage.removeItem("email"); // Clean up after verification
       navigate("/login");

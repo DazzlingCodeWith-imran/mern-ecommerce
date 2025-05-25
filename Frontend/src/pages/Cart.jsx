@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import { FiTrash2, FiPlus, FiMinus, FiArrowRight, FiMapPin } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCheckCircle } from "react-icons/fa";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ const Cart = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/check-auth", {
+        const response = await axios.get(`${backendURL}/api/users/check-auth`, {
           withCredentials: true,
         });
         setIsLoggedIn(response.data.success);
@@ -49,7 +51,7 @@ const Cart = () => {
     setLoading(true);
     try {
       const orderRes = await axios.post(
-        "http://localhost:5000/api/orders",
+        `${backendURL}/api/orders`,
         {
           items: cart.map((item) => ({
             productId: item._id,

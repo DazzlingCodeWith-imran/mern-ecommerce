@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
@@ -10,7 +12,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/users/register", formData);
+      const res = await axios.post(`${backendURL}/api/users/register`, formData);
       localStorage.setItem("email", formData.email); // Save email
       toast.success(res.data.message);
       navigate("/verify-otp");

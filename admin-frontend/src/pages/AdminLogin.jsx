@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -10,7 +12,7 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/users/login", formData, {
+      const res = await axios.post(`${backendURL}/api/users/login`, formData, {
         withCredentials: true, // Add this to send/receive cookies
       });
       if (res.data.data.role !== "admin") {

@@ -4,6 +4,8 @@ import { useNavigate, Link } from "react-router-dom"; // Added Link for footer
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { FiLock, FiMapPin, FiArrowRight } from "react-icons/fi";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 
 const Checkout = ({ cartItems }) => {
   const [address, setAddress] = useState("");
@@ -14,7 +16,7 @@ const Checkout = ({ cartItems }) => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/check-auth", {
+        const response = await axios.get(`${backendURL}/api/users/check-auth`, {
           withCredentials: true,
         });
         if (response.data.success) {
@@ -50,14 +52,14 @@ const Checkout = ({ cartItems }) => {
       const amountInPaise = total * 100;
 
       const response = await axios.post(
-        "http://localhost:5000/api/payments/create-order",
+        `${backendURL}/api/payments/create-order`,
         { amount: amountInPaise, address, items: cartItems },
         { withCredentials: true }
       );
 
       const orderId = response.data.order.id;
       const verifyResponse = await axios.post(
-        "http://localhost:5000/api/payments/verify",
+        `${backendURL}/api/payments/verify`,
         { orderId },
         { withCredentials: true }
       );

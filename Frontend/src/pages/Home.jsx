@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { FiHeart, FiShoppingCart, FiEye, FiChevronLeft, FiChevronRight, FiStar, FiX } from "react-icons/fi";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 
 const Home = () => {
   const { cartItems = [], wishlist = [], addToCart, addToWishlist } = useContext(CartContext);
@@ -21,7 +23,7 @@ const Home = () => {
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products", {
+        const res = await axios.get(`${backendURL}/api/products`, {
           params: { limit: 12, sortField: "popularity", sortOrder: "desc" }
         });
         setFeaturedProducts(res.data.data.products || []);

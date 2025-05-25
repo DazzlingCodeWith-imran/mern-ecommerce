@@ -14,14 +14,16 @@ const Profile = () => {
   const [formData, setFormData] = useState({ name: "", password: "", profileImage: "" });
   const [activeTab, setActiveTab] = useState("profile");
   const [imageFile, setImageFile] = useState(null);
+  const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const [profileRes, ordersRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/users/profile", { withCredentials: true }),
-          axios.get("http://localhost:5000/api/orders", { withCredentials: true }),
+          axios.get(`${backendURL}/api/users/profile`, { withCredentials: true }),
+          axios.get(`${backendURL}/api/orders`, { withCredentials: true }),
         ]);
         setUser(profileRes.data.data);
         setFormData({ name: profileRes.data.data.name, password: "", profileImage: profileRes.data.data.profileImage || "" });
@@ -83,7 +85,7 @@ const Profile = () => {
       const imageUrl = await uploadImageToCloudinary();
       const updatedFormData = { ...formData, profileImage: imageUrl };
 
-      await axios.put("http://localhost:5000/api/users/profile", updatedFormData, {
+      await axios.put(`${backendURL}/api/users/profile`, updatedFormData, {
         withCredentials: true,
       });
       toast.success(

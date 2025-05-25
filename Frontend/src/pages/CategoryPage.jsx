@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import { FiHeart, FiShoppingCart, FiEye, FiX, FiChevronLeft, FiChevronRight, FiFilter, FiStar } from "react-icons/fi";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 const CategoryPage = () => {
   const { slug } = useParams();
@@ -24,7 +25,7 @@ const CategoryPage = () => {
       setLoading(true);
       try {
         const [sortField, sortOrder] = sort.split("-");
-        const res = await axios.get("http://localhost:5000/api/products", {
+        const res = await axios.get(`${backendURL}/api/products`, {
           params: {
             category: slug,
             limit: itemsPerPage,

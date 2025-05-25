@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -26,7 +28,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/users/check-auth", {
+        const res = await axios.get(`${backendURL}/api/users/check-auth`, {
           withCredentials: true,
         });
         if (res.data.data.role !== "admin") {
@@ -45,7 +47,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products");
+        const res = await axios.get(`${backendURL}/api/products`);
         setProducts(res.data.data.products || []);
         setError("");
       } catch (err) {
@@ -66,7 +68,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/orders/admin", {
+        const res = await axios.get(`${backendURL}/api/orders/admin`, {
           params: { page: currentPage, limit: 5, search: searchQuery },
           withCredentials: true,
         });
@@ -103,14 +105,14 @@ const AdminDashboard = () => {
     try {
       if (editingProduct) {
         const res = await axios.put(
-          `http://localhost:5000/api/products/${editingProduct._id}`,
+          `${backendURL}/api/products/${editingProduct._id}`,
           formData,
           { withCredentials: true }
         );
         setProducts(products.map((p) => (p._id === editingProduct._id ? res.data.data : p)));
         setEditingProduct(null);
       } else {
-        const res = await axios.post("http://localhost:5000/api/products", formData, {
+        const res = await axios.post(`${backendURL}/api/products`, formData, {
           withCredentials: true,
         });
         setProducts([...products, res.data.data]);
@@ -153,7 +155,7 @@ const AdminDashboard = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/products/${id}`, {
+        await axios.delete(`${backendURL}/api/products/${id}`, {
           withCredentials: true,
         });
         setProducts(products.filter((p) => p._id !== id));
@@ -175,7 +177,7 @@ const AdminDashboard = () => {
   const handleUpdateOrderStatus = async (orderId, status) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/orders/${orderId}`,
+        `${backendURL}/api/orders/${orderId}`,
         { status },
         { withCredentials: true }
       );

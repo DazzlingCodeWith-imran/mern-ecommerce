@@ -5,7 +5,7 @@ import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { FiShoppingCart, FiHeart, FiMenu, FiX, FiUser, FiLogOut } from "react-icons/fi";
-
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 const Navbar = () => {
   const navigate = useNavigate();
   const { cart, wishlist } = useContext(CartContext);
@@ -15,7 +15,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/users/logout", {}, { withCredentials: true });
+      await axios.post(`${backendURL}/api/users/logout`, {}, { withCredentials: true });
       document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       logout();
       toast.success("Logged out successfully");

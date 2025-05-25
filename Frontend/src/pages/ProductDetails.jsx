@@ -3,6 +3,8 @@ import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom"; // Added Link import
 import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify"; // Added toast
+const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -15,7 +17,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const res = await axios.get(`${backendURL}/api/products/${id}`);
         const productData = res.data.data;
         setProduct(productData);
         setError("");
@@ -38,7 +40,7 @@ const ProductDetails = () => {
 
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/users/check-auth", {
+        const response = await axios.get(`${backendURL}/api/users/check-auth`, {
           withCredentials: true,
         });
         setIsLoggedIn(response.data.success);

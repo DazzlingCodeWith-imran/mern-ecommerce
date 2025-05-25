@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom"; // Link import kiya
 import { toast } from "react-toastify";
+const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 const AdminRegister = () => {
   const [formData, setFormData] = useState({ name: "", email: "", password: "", adminSecret: "" });
@@ -10,7 +11,7 @@ const AdminRegister = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/users/admin/register", formData);
+      const res = await axios.post(`${backendURL}/api/users/admin/register`, formData);
       localStorage.setItem("email", formData.email);
       toast.success(res.data.message);
       navigate("/verify-otp");

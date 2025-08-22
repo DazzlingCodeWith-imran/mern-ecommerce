@@ -6,8 +6,6 @@ import { toast } from "react-toastify";
 import { FiTrash2, FiPlus, FiMinus, FiArrowRight, FiMapPin } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCheckCircle } from "react-icons/fa";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
-
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -21,9 +19,9 @@ const Cart = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(`${backendURL}/api/users/check-auth`, {
-          withCredentials: true,
-        });
+     const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/check-auth`, {
+  withCredentials: true,
+});
         setIsLoggedIn(response.data.success);
       } catch (error) {
         setIsLoggedIn(false);
@@ -50,22 +48,23 @@ const Cart = () => {
 
     setLoading(true);
     try {
-      const orderRes = await axios.post(
-        `${backendURL}/api/orders`,
-        {
-          items: cart.map((item) => ({
-            productId: item._id,
-            productTitle: item.productTitle,
-            productPrice: item.productPrice,
-            quantity: item.quantity,
-          })),
-          totalPrice,
-          address,
-          paymentMethod: "Cash on Delivery",
-          status: "Pending",
-        },
-        { withCredentials: true }
-      );
+     const orderRes = await axios.post(
+  `${import.meta.env.VITE_BACKEND_URL}/orders`,
+  {
+    items: cart.map((item) => ({
+      productId: item._id,
+      productTitle: item.productTitle,
+      productPrice: item.productPrice,
+      quantity: item.quantity,
+    })),
+    totalPrice,
+    address,
+    paymentMethod: "Cash on Delivery",
+    status: "Pending",
+  },
+  { withCredentials: true }
+);
+
 
       if (orderRes.data.success) {
         setIsCheckoutComplete(true);

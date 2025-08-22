@@ -14,28 +14,31 @@ const Profile = () => {
   const [formData, setFormData] = useState({ name: "", password: "", profileImage: "" });
   const [activeTab, setActiveTab] = useState("profile");
   const [imageFile, setImageFile] = useState(null);
-  const backendURL = process.env.REACT_APP_BACKEND_URL;
 
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [profileRes, ordersRes] = await Promise.all([
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/profile`, { withCredentials: true }),
+        axios.get(`${import.meta.env.VITE_BACKEND_URL}/orders`, { withCredentials: true }),
+      ]);
+      setUser(profileRes.data.data);
+      setFormData({
+        name: profileRes.data.data.name,
+        password: "",
+        profileImage: profileRes.data.data.profileImage || "",
+      });
+      setOrders(ordersRes.data.data);
+    } catch (err) {
+      handleError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, [navigate]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [profileRes, ordersRes] = await Promise.all([
-          axios.get(`${backendURL}/api/users/profile`, { withCredentials: true }),
-          axios.get(`${backendURL}/api/orders`, { withCredentials: true }),
-        ]);
-        setUser(profileRes.data.data);
-        setFormData({ name: profileRes.data.data.name, password: "", profileImage: profileRes.data.data.profileImage || "" });
-        setOrders(ordersRes.data.data);
-      } catch (err) {
-        handleError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [navigate]);
 
   const handleError = (err) => {
     const message = err.response?.data?.message || "Network error or server not responding";
@@ -78,32 +81,37 @@ const Profile = () => {
     }
   };
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const imageUrl = await uploadImageToCloudinary();
-      const updatedFormData = { ...formData, profileImage: imageUrl };
+ const handleUpdate = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  try {
+    const imageUrl = await uploadImageToCloudinary();
+    const updatedFormData = { ...formData, profileImage: imageUrl };
 
-      await axios.put(`${backendURL}/api/users/profile`, updatedFormData, {
-        withCredentials: true,
-      });
-      toast.success(
-        <div className="flex items-center">
-          <FaCheckCircle className="w-5 h-5 text-green-500 mr-2" />
-          <span>Profile updated successfully</span>
-        </div>,
-        { position: "bottom-right" }
-      );
-      setUser({ ...user, name: updatedFormData.name, profileImage: imageUrl });
-      setFormData({ ...updatedFormData, password: "" });
-      setImageFile(null); // Clear file input
-    } catch (err) {
-      handleError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    await axios.put(
+      `${import.meta.env.VITE_BACKEND_URL}/users/profile`,
+      updatedFormData,
+      { withCredentials: true }
+    );
+
+    toast.success(
+      <div className="flex items-center">
+        <FaCheckCircle className="w-5 h-5 text-green-500 mr-2" />
+        <span>Profile updated successfully</span>
+      </div>,
+      { position: "bottom-right" }
+    );
+
+    setUser({ ...user, name: updatedFormData.name, profileImage: imageUrl });
+    setFormData({ ...updatedFormData, password: "" });
+    setImageFile(null); // Clear file input
+  } catch (err) {
+    handleError(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-indigo-100">

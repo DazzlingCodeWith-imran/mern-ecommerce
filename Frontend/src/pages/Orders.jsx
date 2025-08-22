@@ -6,8 +6,6 @@ import { toast } from "react-toastify";
 import { FiPackage, FiCalendar, FiCheckCircle, FiClock, FiTruck } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import moment from "moment";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
-
 
 // Global context for orders
 export const OrdersContext = React.createContext();
@@ -31,7 +29,7 @@ const Orders = () => {
         return;
       }
 
-      const res = await axios.get(`${backendURL}/api/orders`, {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/orders`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });

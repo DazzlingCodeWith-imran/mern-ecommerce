@@ -4,7 +4,6 @@ import axios from "axios";
 import { FiSearch, FiFilter, FiStar, FiShoppingCart, FiHeart, FiEye, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 const Products = () => {
   const { addToCart, addToWishlist, cartItems, wishlist } = useContext(CartContext);
@@ -29,7 +28,7 @@ const Products = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${backendURL}/api/products`, {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products`, {
           params: {
             page,
             limit: productsPerPage,

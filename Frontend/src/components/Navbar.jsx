@@ -5,7 +5,7 @@ import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { FiShoppingCart, FiHeart, FiMenu, FiX, FiUser, FiLogOut } from "react-icons/fi";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
+
 const Navbar = () => {
   const navigate = useNavigate();
   const { cart, wishlist } = useContext(CartContext);
@@ -13,21 +13,31 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-  const handleLogout = async () => {
-    try {
-      await axios.post(`${backendURL}/api/users/logout`, {}, { withCredentials: true });
-      document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      logout();
-      toast.success("Logged out successfully");
-      navigate("/login");
-    } catch (error) {
-      const errorMsg = error.response?.data?.message || "Failed to logout";
-      toast.error(errorMsg);
-      console.error("Logout error:", error);
-    }
-    setIsMenuOpen(false);
-    setIsProfileMenuOpen(false);
-  };
+const handleLogout = async () => {
+  try {
+    await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/users/logout`,
+      {},
+      { withCredentials: true }
+    );
+
+    // ✅ Clear cookie (optional, backend already clear karega)
+    document.cookie = "userToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // ✅ Clear frontend auth state
+    logout();
+    toast.success("Logged out successfully");
+    navigate("/login");
+  } catch (error) {
+    const errorMsg = error.response?.data?.message || "Failed to logout";
+    toast.error(errorMsg);
+    console.error("Logout error:", error);
+  }
+
+  // ✅ Close menus after logout
+  setIsMenuOpen(false);
+  setIsProfileMenuOpen(false);
+};
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleProfileMenu = () => setIsProfileMenuOpen(!isProfileMenuOpen);

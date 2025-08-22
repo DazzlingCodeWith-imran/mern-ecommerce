@@ -18,7 +18,8 @@ app.use(
     origin: [
       "http://localhost:5173",
       "http://localhost:5174",
-      "https://bazaarhubfashion.netlify.app"
+      "https://mern-ecommerce-frontend-d5eg.onrender.com",
+
     ],
     credentials: true,
   })

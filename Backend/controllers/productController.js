@@ -158,14 +158,14 @@ const searchProducts = async (req, res) => {
     const { query, category, price_min, price_max } = req.query;
     let filter = {};
 
-    // Log incoming request for debugging
+    // Debugging logs
     console.log("Search Query:", { query, category, price_min, price_max });
 
     if (query) {
-      filter.productTitle = { $regex: query, $options: "i" }; // Match with your model
+      filter.productTitle = { $regex: query, $options: "i" };
     }
     if (category) {
-      filter.productCategory = category; // Match with your model
+      filter.category = category; // Corrected field
     }
     if (price_min || price_max) {
       filter.productPrice = {};
@@ -173,14 +173,16 @@ const searchProducts = async (req, res) => {
       if (price_max) filter.productPrice.$lte = Number(price_max) || Infinity;
     }
 
-    const products = await Product.find(filter);
-    console.log("Found Products:", products); // Debug
+    const products = await ProductModel.find(filter); // Corrected model name
+    console.log("Found Products:", products);
+
     res.status(200).json({ success: true, data: { products } });
   } catch (error) {
     console.error("Search products error:", error.message, error.stack);
     res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
+
 
 module.exports = {
   addProduct,

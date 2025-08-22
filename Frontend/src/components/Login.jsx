@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -19,7 +18,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        `${backendURL}/api/users/login`,
+        `${import.meta.env.VITE_BACKEND_URL}/users/login`,
         formData,
         { withCredentials: true }
       );

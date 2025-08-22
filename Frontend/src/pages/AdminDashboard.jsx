@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
-
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -25,118 +23,135 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Check if user is admin
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const res = await axios.get(`${backendURL}/api/users/check-auth`, {
-          withCredentials: true,
-        });
-        if (res.data.data.role !== "admin") {
-          toast.error("Access denied: Admins only");
-          navigate("/admin/login");
-        }
-      } catch (err) {
-        toast.error("Please login to access the dashboard");
+useEffect(() => {
+  const checkAdmin = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/users/check-auth`,
+        { withCredentials: true }
+      );
+
+      if (res.data.data.role !== "admin") {
+        toast.error("Access denied: Admins only");
         navigate("/admin/login");
       }
-    };
-    checkAdmin();
-  }, [navigate]);
-
-  // Fetch all products
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get(`${backendURL}/api/products`);
-        setProducts(res.data.data.products || []);
-        setError("");
-      } catch (err) {
-        setProducts([]);
-        if (err.response && err.response.data) {
-          setError(err.response.data.message || "Failed to fetch products");
-          toast.error(err.response.data.message || "Failed to fetch products");
-        } else {
-          setError("Network error or server not responding");
-          toast.error("Network error or server not responding");
-        }
-      }
-    };
-    fetchProducts();
-  }, []);
-
-  // Fetch all orders (admin) with pagination and search
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const res = await axios.get(`${backendURL}/api/orders/admin`, {
-          params: { page: currentPage, limit: 5, search: searchQuery },
-          withCredentials: true,
-        });
-        setOrders(res.data.data.orders || []);
-        setTotalPages(res.data.data.totalPages || 1);
-        setError("");
-      } catch (err) {
-        setOrders([]);
-        if (err.response && err.response.data) {
-          setError(err.response.data.message || "Failed to fetch orders");
-          toast.error(err.response.data.message || "Failed to fetch orders");
-          if (err.response.status === 403) {
-            navigate("/admin/login");
-          }
-        } else {
-          setError("Network error or server not responding");
-          toast.error("Network error or server not responding. Check if server is running.");
-        }
-      }
-    };
-    if (activeTab === "orders") {
-      fetchOrders();
-    }
-  }, [currentPage, searchQuery, activeTab, navigate]);
-
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Add or Update Product
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (editingProduct) {
-        const res = await axios.put(
-          `${backendURL}/api/products/${editingProduct._id}`,
-          formData,
-          { withCredentials: true }
-        );
-        setProducts(products.map((p) => (p._id === editingProduct._id ? res.data.data : p)));
-        setEditingProduct(null);
-      } else {
-        const res = await axios.post(`${backendURL}/api/products`, formData, {
-          withCredentials: true,
-        });
-        setProducts([...products, res.data.data]);
-      }
-      setFormData({
-        productTitle: "",
-        productDesc: "",
-        productPrice: "",
-        productImage: "",
-        category: "",
-        brand: "",
-      });
-      setError("");
-      toast.success(editingProduct ? "Product updated successfully" : "Product added successfully");
     } catch (err) {
+      toast.error("Please login to access the dashboard");
+      navigate("/admin/login");
+    }
+  };
+  checkAdmin();
+}, [navigate]);
+
+// ✅ Fetch all products
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/products`
+      );
+      setProducts(res.data.data.products || []);
+      setError("");
+    } catch (err) {
+      setProducts([]);
       if (err.response && err.response.data) {
-        setError(err.response.data.message || "Failed to save product");
-        toast.error(err.response.data.message || "Failed to save product");
+        setError(err.response.data.message || "Failed to fetch products");
+        toast.error(err.response.data.message || "Failed to fetch products");
       } else {
         setError("Network error or server not responding");
         toast.error("Network error or server not responding");
       }
     }
   };
+  fetchProducts();
+}, []);
+
+
+// Fetch all orders (admin) with pagination and search
+useEffect(() => {
+  const fetchOrders = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/orders/admin`,
+        {
+          params: { page: currentPage, limit: 5, search: searchQuery },
+          withCredentials: true,
+        }
+      );
+      setOrders(res.data.data.orders || []);
+      setTotalPages(res.data.data.totalPages || 1);
+      setError("");
+    } catch (err) {
+      setOrders([]);
+      if (err.response && err.response.data) {
+        setError(err.response.data.message || "Failed to fetch orders");
+        toast.error(err.response.data.message || "Failed to fetch orders");
+        if (err.response.status === 403) {
+          navigate("/admin/login");
+        }
+      } else {
+        setError("Network error or server not responding");
+        toast.error("Network error or server not responding. Check if server is running.");
+      }
+    }
+  };
+  if (activeTab === "orders") {
+    fetchOrders();
+  }
+}, [currentPage, searchQuery, activeTab, navigate]);
+
+// Handle form input changes
+const handleInputChange = (e) => {
+  setFormData({ ...formData, [e.target.name]: e.target.value });
+};
+
+// Add or Update Product
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    if (editingProduct) {
+      const res = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/products/${editingProduct._id}`,
+        formData,
+        { withCredentials: true }
+      );
+      setProducts(
+        products.map((p) => (p._id === editingProduct._id ? res.data.data : p))
+      );
+      setEditingProduct(null);
+    } else {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/products`,
+        formData,
+        { withCredentials: true }
+      );
+      setProducts([...products, res.data.data]);
+    }
+    setFormData({
+      productTitle: "",
+      productDesc: "",
+      productPrice: "",
+      productImage: "",
+      category: "",
+      brand: "",
+    });
+    setError("");
+    toast.success(
+      editingProduct
+        ? "Product updated successfully"
+        : "Product added successfully"
+    );
+  } catch (err) {
+    if (err.response && err.response.data) {
+      setError(err.response.data.message || "Failed to save product");
+      toast.error(err.response.data.message || "Failed to save product");
+    } else {
+      setError("Network error or server not responding");
+      toast.error("Network error or server not responding");
+    }
+  }
+};
+
 
   // Edit Product
   const handleEdit = (product) => {
@@ -152,53 +167,54 @@ const AdminDashboard = () => {
   };
 
   // Delete Product
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        await axios.delete(`${backendURL}/api/products/${id}`, {
-          withCredentials: true,
-        });
-        setProducts(products.filter((p) => p._id !== id));
-        setError("");
-        toast.success("Product deleted successfully");
-      } catch (err) {
-        if (err.response && err.response.data) {
-          setError(err.response.data.message || "Failed to delete product");
-          toast.error(err.response.data.message || "Failed to delete product");
-        } else {
-          setError("Network error or server not responding");
-          toast.error("Network error or server not responding");
-        }
-      }
-    }
-  };
-
-  // Update Order Status
-  const handleUpdateOrderStatus = async (orderId, status) => {
+ const handleDelete = async (id) => {
+  if (window.confirm("Are you sure you want to delete this product?")) {
     try {
-      const res = await axios.put(
-        `${backendURL}/api/orders/${orderId}`,
-        { status },
-        { withCredentials: true }
-      );
-      setOrders(
-        orders.map((order) =>
-          order._id === orderId ? { ...order, status: res.data.data.status } : order
-        )
-      );
+      await axios.delete(`http://localhost:5000/api/products/${id}`, {
+        withCredentials: true,
+      });
+      setProducts(products.filter((p) => p._id !== id));
       setError("");
-      toast.success("Order status updated successfully");
+      toast.success("Product deleted successfully");
     } catch (err) {
-      console.error("Update status error:", err);
       if (err.response && err.response.data) {
-        setError(err.response.data.message || "Failed to update order status");
-        toast.error(err.response.data.message || "Failed to update order status");
+        setError(err.response.data.message || "Failed to delete product");
+        toast.error(err.response.data.message || "Failed to delete product");
       } else {
         setError("Network error or server not responding");
-        toast.error("Network error or server not responding. Check if server is running.");
+        toast.error("Network error or server not responding");
       }
     }
-  };
+  }
+};
+
+
+const handleUpdateOrderStatus = async (orderId, status) => {
+  try {
+    const res = await axios.put(
+      `http://localhost:5000/api/orders/${orderId}`,
+      { status },
+      { withCredentials: true }
+    );
+    setOrders(
+      orders.map((order) =>
+        order._id === orderId ? { ...order, status: res.data.data.status } : order
+      )
+    );
+    setError("");
+    toast.success("Order status updated successfully");
+  } catch (err) {
+    console.error("Update status error:", err);
+    if (err.response && err.response.data) {
+      setError(err.response.data.message || "Failed to update order status");
+      toast.error(err.response.data.message || "Failed to update order status");
+    } else {
+      setError("Network error or server not responding");
+      toast.error("Network error or server not responding. Check if server is running.");
+    }
+  }
+};
+
 
   // Logout function
   const handleLogout = () => {

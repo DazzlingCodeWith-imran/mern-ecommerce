@@ -7,8 +7,6 @@ import { toast } from "react-toastify";
 import { FiHeart, FiShoppingCart, FiEye, FiChevronLeft, FiChevronRight, FiStar, FiX } from "react-icons/fi";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
-
 
 const Home = () => {
   const { cartItems = [], wishlist = [], addToCart, addToWishlist } = useContext(CartContext);
@@ -20,22 +18,26 @@ const Home = () => {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const sliderRef = useRef(null);
 
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      try {
-        const res = await axios.get(`${backendURL}/api/products`, {
-          params: { limit: 12, sortField: "popularity", sortOrder: "desc" }
-        });
-        setFeaturedProducts(res.data.data.products || []);
-        setLoading(false);
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-        toast.error("Failed to load products");
-        setLoading(false);
-      }
-    };
-    fetchFeaturedProducts();
-  }, []);
+useEffect(() => {
+  const fetchFeaturedProducts = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/products`,
+        {
+          params: { limit: 12, sortField: "popularity", sortOrder: "desc" },
+          withCredentials: true, // agar cookies/session use kar rahe ho
+        }
+      );
+      setFeaturedProducts(res.data.data.products || []);
+      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+      toast.error("Failed to load products");
+      setLoading(false);
+    }
+  };
+  fetchFeaturedProducts();
+}, []);
 
   useEffect(() => {
     localStorage.setItem("recentlyViewed", JSON.stringify(recentlyViewed));

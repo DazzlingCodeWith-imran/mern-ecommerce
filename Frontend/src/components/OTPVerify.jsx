@@ -2,30 +2,36 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-    try {
-      const email = localStorage.getItem("email");
-      if (!email) throw new Error("No email found in localStorage");
-      const res = await axios.post(`${backendURL}/api/users/verify-otp`, { email, otp });
-      toast.success(res.data.message);
-      localStorage.removeItem("email"); // Clean up after verification
-      navigate("/login");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to verify OTP");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (isSubmitting) return;
+  setIsSubmitting(true);
+
+  try {
+    const email = localStorage.getItem("email");
+    if (!email) throw new Error("No email found in localStorage");
+
+    const res = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/users/verify-otp`,
+      { email, otp },
+      { withCredentials: true } // 👈 agar cookies use karte ho
+    );
+
+    toast.success(res.data.message);
+    localStorage.removeItem("email"); // Clean up after verification
+    navigate("/login");
+  } catch (err) {
+    toast.error(err.response?.data?.message || "Failed to verify OTP");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

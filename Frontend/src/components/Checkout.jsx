@@ -4,8 +4,6 @@ import { useNavigate, Link } from "react-router-dom"; // Added Link for footer
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import { FiLock, FiMapPin, FiArrowRight } from "react-icons/fi";
-const backendURL = process.env.REACT_APP_BACKEND_URL;
-
 
 const Checkout = ({ cartItems }) => {
   const [address, setAddress] = useState("");
@@ -13,25 +11,29 @@ const Checkout = ({ cartItems }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get(`${backendURL}/api/users/check-auth`, {
-          withCredentials: true,
-        });
-        if (response.data.success) {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
-          navigate("/login");
-        }
-      } catch (error) {
+useEffect(() => {
+  const checkAuth = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/users/check-auth`,
+        { withCredentials: true }
+      );
+
+      if (response.data.success) {
+        setIsAuthenticated(true);
+      } else {
         setIsAuthenticated(false);
         navigate("/login");
       }
-    };
-    checkAuth();
-  }, [navigate]);
+    } catch (error) {
+      setIsAuthenticated(false);
+      navigate("/login");
+    }
+  };
+
+  checkAuth();
+}, [navigate]);
+
 
   const total = cartItems.reduce((sum, item) => sum + item.productPrice * item.quantity, 0);
 
@@ -52,14 +54,14 @@ const Checkout = ({ cartItems }) => {
       const amountInPaise = total * 100;
 
       const response = await axios.post(
-        `${backendURL}/api/payments/create-order`,
+        "http://localhost:5000/api/payments/create-order",
         { amount: amountInPaise, address, items: cartItems },
         { withCredentials: true }
       );
 
       const orderId = response.data.order.id;
       const verifyResponse = await axios.post(
-        `${backendURL}/api/payments/verify`,
+        "http://localhost:5000/api/payments/verify",
         { orderId },
         { withCredentials: true }
       );

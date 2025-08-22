@@ -3,8 +3,6 @@ import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom"; // Added Link import
 import { CartContext } from "../context/CartContext";
 import { toast } from "react-toastify"; // Added toast
-const backendURL = process.env.REACT_APP_BACKEND_URL;
-
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -17,7 +15,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`${backendURL}/api/products/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/products/${id}`);
         const productData = res.data.data;
         setProduct(productData);
         setError("");
@@ -40,9 +38,10 @@ const ProductDetails = () => {
 
     const checkAuth = async () => {
       try {
-        const response = await axios.get(`${backendURL}/api/users/check-auth`, {
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/users/check-auth`, {
           withCredentials: true,
         });
+
         setIsLoggedIn(response.data.success);
       } catch (error) {
         setIsLoggedIn(false);
@@ -89,9 +88,8 @@ const ProductDetails = () => {
             <button
               onClick={handleAddToCart}
               disabled={!isLoggedIn}
-              className={`px-4 py-2 rounded text-white ${
-                isLoggedIn ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
-              }`}
+              className={`px-4 py-2 rounded text-white ${isLoggedIn ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400 cursor-not-allowed"
+                }`}
             >
               Add to Cart
             </button>
